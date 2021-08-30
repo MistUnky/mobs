@@ -1,7 +1,7 @@
 mobs = {}
 function mobs:register_mob(name, def)
 	minetest.register_entity(name, {
-		hp_max = def.hp_max,
+		hp_max = 100+def.hp_max,
 		physical = true,
 		collisionbox = def.collisionbox,
 		visual = def.visual,
@@ -475,7 +475,7 @@ function mobs:register_mob(name, def)
 		end,
 		
 		on_punch = function(self, hitter)
-			if self.object:get_hp() <= 0 then
+			if self.object:get_hp() <= 100 then
 				if hitter and hitter:is_player() and hitter:get_inventory() then
 					for _,drop in ipairs(self.drops) do
 						if math.random(1, drop.chance) == 1 then
@@ -483,6 +483,7 @@ function mobs:register_mob(name, def)
 						end
 					end
 				end
+				self.object:remove()
 			end
 		end,
 		
