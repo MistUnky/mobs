@@ -383,7 +383,7 @@ mobs:register_mob("mobs:dungeon_master", {
 		speed_run = 15,
 	},
 })
-mobs:register_spawn("mobs:dungeon_master", {"default:stone"}, 2, -1, 7000, 1, -50)
+mobs:register_spawn("mobs:dungeon_master", {"default:stone", "default:mossycobble"}, 2, -1, 7000, 1, -50)
 
 mobs:register_arrow("mobs:fireball", {
 	visual = "sprite",
