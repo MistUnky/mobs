@@ -1,4 +1,4 @@
-function mobs_extra_register_sheeplike(name, hp, textures, textures_shear, sheared, fodder, biomes, mx, my, downer)
+function mobs_extra_register_sheeplike(name, hp, textures, textures_shear, sheared, fodder, biomes, mx, my, downer, chancer, amtp)
 	mobs:register_mob(name, {
 		type = "animal",
 		hp_max = hp,
@@ -68,7 +68,7 @@ function mobs_extra_register_sheeplike(name, hp, textures, textures_shear, shear
 			end
 		end,
 	})
-	mobs:register_spawn(name, biomes, 20, 8, 7000, 3, 31000)
+	mobs:register_spawn(name, biomes, 20, 8, chancer, amtp, 31000)
 end
 
 --mobs_extra_register_sheeplike("mobs:sheep", 5, {"mobs_sheep.png", "mobs_sheep.png"}, {"mobs_sheep_naked.png", "mobs_sheep_naked.png"}, "wool:white", "farming:wheat", {"default:dirt_with_grass"})
@@ -92,7 +92,7 @@ minetest.register_craft({
 	cooktime = 3,
 })
 
-mobs_extra_register_sheeplike("mobs:chicken", 5, {"mobs_chicken.png", "mobs_chicken.png"}, {"mobs_chicken.png", "mobs_chicken.png"}, "mobs:egg", "farming:wheat", {"default:dirt_with_grass"}, 0.5, 0.5, -0.4)
+mobs_extra_register_sheeplike("mobs:chicken", 5, {"mobs_chicken.png", "mobs_chicken.png"}, {"mobs_chicken.png", "mobs_chicken.png"}, "mobs:egg", "farming:wheat", {"default:dirt_with_grass"}, 0.5, 0.5, -0.4, 8000, 4)
 
 minetest.register_craftitem("mobs:milk", {
 	description = "Milk",
@@ -113,4 +113,4 @@ minetest.register_craft({
 	cooktime = 17,
 })
 
-mobs_extra_register_sheeplike("mobs:cow", 5, {"mobs_cow.png", "mobs_cow.png"}, {"mobs_cow.png", "mobs_cow.png"}, "mobs:milk", "farming:wheat", {"default:dirt_with_grass"}, 3, 4, -1.0)
+mobs_extra_register_sheeplike("mobs:cow", 5, {"mobs_cow.png", "mobs_cow.png"}, {"mobs_cow.png", "mobs_cow.png"}, "mobs:milk", "farming:wheat", {"default:dirt_with_grass"}, 3, 4, -1.0, 9000, 1)
