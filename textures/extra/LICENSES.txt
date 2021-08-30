@@ -1,5 +1,6 @@
 mobs_egg.png and mobs_chicken.png:
 	CC-BY-SA 3.0, Author sapier
+	URL: https://creativecommons.org/licenses/by-sa/3.0/legalcode
 
 mobs_cow.png:
 	WTFPL, rinoux
