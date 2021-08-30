@@ -3,11 +3,10 @@ dofile(minetest.get_modpath("mobs").."/api.lua")
 mobs:register_mob("mobs:dirt_monster", {
 	type = "monster",
 	hp_max = 5,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_stone_monster.x",
-	textures = {"mobs_dirt_monster.png"},
-	visual_size = {x=3, y=2.6},
+	collisionbox = {-0.4, -1.0, -0.4, 0.4, 1.9, 0.4},
+	visual = "upright_sprite",
+	textures = {"mobs_dirt_monster.png", "mobs_dirt_monster_back.png"},
+	visual_size = {x=1, y=2},
 	makes_footstep_sound = true,
 	view_range = 15,
 	walk_velocity = 1,
@@ -44,11 +43,10 @@ mobs:register_spawn("mobs:dirt_monster", {"default:dirt_with_grass"}, 3, -1, 700
 mobs:register_mob("mobs:stone_monster", {
 	type = "monster",
 	hp_max = 10,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_stone_monster.x",
-	textures = {"mobs_stone_monster.png"},
-	visual_size = {x=3, y=2.6},
+	collisionbox = {-0.4, -1.0, -0.4, 0.4, 1.9, 0.4},
+	visual = "upright_sprite",
+	textures = {"mobs_stone_monster.png", "mobs_stone_monster_back.png"},
+	visual_size = {x=1, y=2},
 	makes_footstep_sound = true,
 	view_range = 10,
 	walk_velocity = 0.5,
@@ -85,11 +83,10 @@ mobs:register_spawn("mobs:stone_monster", {"default:stone"}, 3, -1, 7000, 3, 0)
 mobs:register_mob("mobs:sand_monster", {
 	type = "monster",
 	hp_max = 3,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_sand_monster.x",
-	textures = {"mobs_sand_monster.png"},
-	visual_size = {x=8,y=8},
+	collisionbox = {-0.4, -1.0, -0.4, 0.4, 1.9, 0.4},
+	visual = "upright_sprite",
+	textures = {"mobs_sand_monster.png", "mobs_sand_monster_back.png"},
+	visual_size = {x=1,y=2},
 	makes_footstep_sound = true,
 	view_range = 15,
 	walk_velocity = 1.5,
@@ -126,11 +123,10 @@ mobs:register_spawn("mobs:sand_monster", {"default:desert_sand"}, 20, -1, 7000, 
 mobs:register_mob("mobs:tree_monster", {
 	type = "monster",
 	hp_max = 5,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_tree_monster.x",
-	textures = {"mobs_tree_monster.png"},
-	visual_size = {x=4.5,y=4.5},
+	collisionbox = {-0.4, -1.0, -0.4, 0.4, 1.9, 0.4},
+	visual = "upright_sprite",
+	textures = {"mobs_tree_monster.png", "mobs_tree_monster_back.png"},
+	visual_size = {x=3,y=5},
 	makes_footstep_sound = true,
 	view_range = 15,
 	walk_velocity = 1,
@@ -172,10 +168,9 @@ mobs:register_spawn("mobs:tree_monster", {"default:leaves", "default:jungleleave
 mobs:register_mob("mobs:sheep", {
 	type = "animal",
 	hp_max = 5,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
-	textures = {"mobs_sheep.png"},
-	visual = "mesh",
-	mesh = "mobs_sheep.x",
+	collisionbox = {-0.4, -1.0, -0.4, 0.4, 1, 0.4},
+	textures = {"mobs_sheep.png", "mobs_sheep.png"},
+	visual = "upright_sprite",
 	makes_footstep_sound = true,
 	walk_velocity = 1,
 	armor = 200,
@@ -221,8 +216,7 @@ mobs:register_mob("mobs:sheep", {
 					self.food = 0
 					self.naked = false
 					self.object:set_properties({
-						textures = {"mobs_sheep.png"},
-						mesh = "mobs_sheep.x",
+						textures = {"mobs_sheep.png", "mobs_sheep.png"},
 					})
 				end
 			end
@@ -234,8 +228,7 @@ mobs:register_mob("mobs:sheep", {
 				clicker:get_inventory():add_item("main", ItemStack("wool:white "..math.random(1,3)))
 			end
 			self.object:set_properties({
-				textures = {"mobs_sheep_shaved.png"},
-				mesh = "mobs_sheep_shaved.x",
+				textures = {"mobs_sheep_naked.png", "mobs_sheep_naked.png"},
 			})
 		end
 	end,
@@ -263,9 +256,9 @@ minetest.register_craft({
 mobs:register_mob("mobs:rat", {
 	type = "animal",
 	hp_max = 1,
-	collisionbox = {-0.2, -0.01, -0.2, 0.2, 0.2, 0.2},
-	visual = "mesh",
-	mesh = "mobs_rat.x",
+	collisionbox = {-0.2, -0.5, -0.2, 0.2, 0.2, 0.2},
+	visual = "upright_sprite",
+	visual_size = {x=1,y=0.5},
 	textures = {"mobs_rat.png"},
 	makes_footstep_sound = false,
 	walk_velocity = 1,
@@ -287,7 +280,7 @@ mobs:register_spawn("mobs:rat", {"default:dirt_with_grass", "default:stone"}, 20
 
 minetest.register_craftitem("mobs:rat", {
 	description = "Rat",
-	inventory_image = "mobs_rat_inventory.png",
+	inventory_image = "mobs_rat.png",
 	
 	on_place = function(itemstack, placer, pointed_thing)
 		if pointed_thing.above then
@@ -315,11 +308,10 @@ minetest.register_craft({
 mobs:register_mob("mobs:oerkki", {
 	type = "monster",
 	hp_max = 8,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_oerkki.x",
-	textures = {"mobs_oerkki.png"},
-	visual_size = {x=5, y=5},
+	collisionbox = {-0.4, -1.0, -0.4, 0.4, 1.9, 0.4},
+	visual = "upright_sprite",
+	textures = {"mobs_oerkki.png", "mobs_oerkki_back.png"},
+	visual_size = {x=1, y=2},
 	makes_footstep_sound = false,
 	view_range = 15,
 	walk_velocity = 1,
@@ -351,11 +343,10 @@ mobs:register_spawn("mobs:oerkki", {"default:stone"}, 2, -1, 7000, 3, -10)
 mobs:register_mob("mobs:dungeon_master", {
 	type = "monster",
 	hp_max = 10,
-	collisionbox = {-0.7, -0.01, -0.7, 0.7, 2.6, 0.7},
-	visual = "mesh",
-	mesh = "mobs_dungeon_master.x",
-	textures = {"mobs_dungeon_master.png"},
-	visual_size = {x=8, y=8},
+	collisionbox = {-0.7, -1.0, -0.7, 0.7, 2.6, 0.7},
+	visual = "upright_sprite",
+	textures = {"mobs_dungeon_master.png", "mobs_dungeon_master_back.png"},
+	visual_size = {x=1, y=2},
 	makes_footstep_sound = true,
 	view_range = 15,
 	walk_velocity = 1,

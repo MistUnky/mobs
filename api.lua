@@ -41,17 +41,21 @@ function mobs:register_mob(name, def)
 		
 		set_velocity = function(self, v)
 			local yaw = self.object:getyaw()
-			if self.drawtype == "side" then
-				yaw = yaw+(math.pi/2)
+			if v ~= nil and yaw ~= nil then
+				if self.drawtype == "side" then
+					yaw = yaw+(math.pi/2)
+				end
+				local x = math.sin(yaw) * -v
+				local z = math.cos(yaw) * v
+				self.object:setvelocity({x=self.object:getvelocity().x, y=self.object:getvelocity().y, z=self.object:getvelocity().z})
 			end
-			local x = math.sin(yaw) * -v
-			local z = math.cos(yaw) * v
-			self.object:setvelocity({x=x, y=self.object:getvelocity().y, z=z})
 		end,
 		
 		get_velocity = function(self)
 			local v = self.object:getvelocity()
-			return (v.x^2 + v.z^2)^(0.5)
+			if v ~= nil then
+				return (v.x^2 + v.z^2)^(0.5)
+			end
 		end,
 		
 		set_animation = function(self, type)
@@ -219,18 +223,20 @@ function mobs:register_mob(name, def)
 				for _,player in pairs(minetest.get_connected_players()) do
 					local s = self.object:getpos()
 					local p = player:getpos()
-					local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
-					if dist < self.view_range then
-						if self.attack.dist then
-							if self.attack.dist < dist then
+					if s ~= nil and p ~= nil then
+						local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+						if dist < self.view_range then
+							if self.attack.dist then
+								if self.attack.dist < dist then
+									self.state = "attack"
+									self.attack.player = player
+									self.attack.dist = dist
+								end
+							else
 								self.state = "attack"
 								self.attack.player = player
 								self.attack.dist = dist
 							end
-						else
-							self.state = "attack"
-							self.attack.player = player
-							self.attack.dist = dist
 						end
 					end
 				end
@@ -240,9 +246,11 @@ function mobs:register_mob(name, def)
 				for _,player in pairs(minetest.get_connected_players()) do
 					local s = self.object:getpos()
 					local p = player:getpos()
-					local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
-					if self.view_range and dist < self.view_range then
-						self.following = player
+					if s ~= nil and p ~= nil then
+						local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+						if self.view_range and dist < self.view_range then
+							self.following = player
+						end
 					end
 				end
 			end
@@ -290,141 +298,142 @@ function mobs:register_mob(name, def)
 					end
 				end
 			end
-			
-			if self.state == "stand" then
-				if math.random(1, 4) == 1 then
-					self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/180*math.pi))
-				end
-				self.set_velocity(self, 0)
-				self.set_animation(self, "stand")
-				if math.random(1, 100) <= 50 then
-					self.set_velocity(self, self.walk_velocity)
-					self.state = "walk"
-					self.set_animation(self, "walk")
-				end
-			elseif self.state == "walk" then
-				if math.random(1, 100) <= 30 then
-					self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/180*math.pi))
-				end
-				if self.jump and self.get_velocity(self) <= 0.5 and self.object:getvelocity().y == 0 then
-					local v = self.object:getvelocity()
-					v.y = 5
-					self.object:setvelocity(v)
-				end
-				self:set_animation("walk")
-				self.set_velocity(self, self.walk_velocity)
-				if math.random(1, 100) <= 10 then
-					self.set_velocity(self, 0)
-					self.state = "stand"
-					self:set_animation("stand")
-				end
-			elseif self.state == "attack" and self.attack_type == "dogfight" then
-				if not self.attack.player or not self.attack.player:is_player() then
-					self.state = "stand"
-					self:set_animation("stand")
-					return
-				end
-				local s = self.object:getpos()
-				local p = self.attack.player:getpos()
-				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
-				if dist > self.view_range or self.attack.player:get_hp() <= 0 then
-					self.state = "stand"
-					self.v_start = false
-					self.set_velocity(self, 0)
-					self.attack = {player=nil, dist=nil}
-					self:set_animation("stand")
-					return
-				else
-					self.attack.dist = dist
-				end
-				
-				local vec = {x=p.x-s.x, y=p.y-s.y, z=p.z-s.z}
-				local yaw = math.atan(vec.z/vec.x)+math.pi/2
-				if self.drawtype == "side" then
-					yaw = yaw+(math.pi/2)
-				end
-				if p.x > s.x then
-					yaw = yaw+math.pi
-				end
-				self.object:setyaw(yaw)
-				if self.attack.dist > 2 then
-					if not self.v_start then
-						self.v_start = true
-						self.set_velocity(self, self.run_velocity)
-					else
-						if self.jump and self.get_velocity(self) <= 0.5 and self.object:getvelocity().y == 0 then
-							local v = self.object:getvelocity()
-							v.y = 5
-							self.object:setvelocity(v)
-						end
-						self.set_velocity(self, self.run_velocity)
+			if self.object:getyaw() ~= nil then
+				if self.state == "stand" then
+					if math.random(1, 4) == 1 then
+						self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/180*math.pi))
 					end
-					self:set_animation("run")
-				else
 					self.set_velocity(self, 0)
-					self:set_animation("punch")
-					self.v_start = false
-					if self.timer > 1 then
+					self.set_animation(self, "stand")
+					if math.random(1, 100) <= 50 then
+						self.set_velocity(self, self.walk_velocity)
+						self.state = "walk"
+						self.set_animation(self, "walk")
+					end
+				elseif self.state == "walk" then
+					if math.random(1, 100) <= 30 then
+						self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/180*math.pi))
+					end
+					if self.jump and self.get_velocity(self) <= 0.5 and self.object:getvelocity().y == 0 then
+						local v = self.object:getvelocity()
+						v.y = 5
+						self.object:setvelocity(v)
+					end
+					self:set_animation("walk")
+					self.set_velocity(self, self.walk_velocity)
+					if math.random(1, 100) <= 10 then
+						self.set_velocity(self, 0)
+						self.state = "stand"
+						self:set_animation("stand")
+					end
+				elseif self.state == "attack" and self.attack_type == "dogfight" then
+					if not self.attack.player or not self.attack.player:is_player() then
+						self.state = "stand"
+						self:set_animation("stand")
+						return
+					end
+					local s = self.object:getpos()
+					local p = self.attack.player:getpos()
+					local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+					if dist > self.view_range or self.attack.player:get_hp() <= 0 then
+						self.state = "stand"
+						self.v_start = false
+						self.set_velocity(self, 0)
+						self.attack = {player=nil, dist=nil}
+						self:set_animation("stand")
+						return
+					else
+						self.attack.dist = dist
+					end
+					
+					local vec = {x=p.x-s.x, y=p.y-s.y, z=p.z-s.z}
+					local yaw = math.atan(vec.z/vec.x)+math.pi/2
+					if self.drawtype == "side" then
+						yaw = yaw+(math.pi/2)
+					end
+					if p.x > s.x then
+						yaw = yaw+math.pi
+					end
+					self.object:setyaw(yaw)
+					if self.attack.dist > 2 then
+						if not self.v_start then
+							self.v_start = true
+							self.set_velocity(self, self.run_velocity)
+						else
+							if self.jump and self.get_velocity(self) <= 0.5 and self.object:getvelocity().y == 0 then
+								local v = self.object:getvelocity()
+								v.y = 5
+								self.object:setvelocity(v)
+							end
+							self.set_velocity(self, self.run_velocity)
+						end
+						self:set_animation("run")
+					else
+						self.set_velocity(self, 0)
+						self:set_animation("punch")
+						self.v_start = false
+						if self.timer > 1 then
+							self.timer = 0
+							if self.sounds and self.sounds.attack then
+								minetest.sound_play(self.sounds.attack, {object = self.object})
+							end
+							self.attack.player:punch(self.object, 1.0,  {
+								full_punch_interval=1.0,
+								damage_groups = {fleshy=self.damage}
+							}, vec)
+						end
+					end
+				elseif self.state == "attack" and self.attack_type == "shoot" then
+					if not self.attack.player or not self.attack.player:is_player() then
+						self.state = "stand"
+						self:set_animation("stand")
+						return
+					end
+					local s = self.object:getpos()
+					local p = self.attack.player:getpos()
+					local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+					if dist > self.view_range or self.attack.player:get_hp() <= 0 then
+						self.state = "stand"
+						self.v_start = false
+						self.set_velocity(self, 0)
+						self.attack = {player=nil, dist=nil}
+						self:set_animation("stand")
+						return
+					else
+						self.attack.dist = dist
+					end
+					
+					local vec = {x=p.x-s.x, y=p.y-s.y, z=p.z-s.z}
+					local yaw = math.atan(vec.z/vec.x)+math.pi/2
+					if self.drawtype == "side" then
+						yaw = yaw+(math.pi/2)
+					end
+					if p.x > s.x then
+						yaw = yaw+math.pi
+					end
+					self.object:setyaw(yaw)
+					self.set_velocity(self, 0)
+					
+					if self.timer > self.shoot_interval and math.random(1, 100) <= 60 then
 						self.timer = 0
+						
+						self:set_animation("punch")
+						
 						if self.sounds and self.sounds.attack then
 							minetest.sound_play(self.sounds.attack, {object = self.object})
 						end
-						self.attack.player:punch(self.object, 1.0,  {
-							full_punch_interval=1.0,
-							damage_groups = {fleshy=self.damage}
-						}, vec)
+						
+						local p = self.object:getpos()
+						p.y = p.y + (self.collisionbox[2]+self.collisionbox[5])/2
+						local obj = minetest.env:add_entity(p, self.arrow)
+						local amount = (vec.x^2+vec.y^2+vec.z^2)^0.5
+						local v = obj:get_luaentity().velocity
+						vec.y = vec.y+1
+						vec.x = vec.x*v/amount
+						vec.y = vec.y*v/amount
+						vec.z = vec.z*v/amount
+						obj:setvelocity(vec)
 					end
-				end
-			elseif self.state == "attack" and self.attack_type == "shoot" then
-				if not self.attack.player or not self.attack.player:is_player() then
-					self.state = "stand"
-					self:set_animation("stand")
-					return
-				end
-				local s = self.object:getpos()
-				local p = self.attack.player:getpos()
-				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
-				if dist > self.view_range or self.attack.player:get_hp() <= 0 then
-					self.state = "stand"
-					self.v_start = false
-					self.set_velocity(self, 0)
-					self.attack = {player=nil, dist=nil}
-					self:set_animation("stand")
-					return
-				else
-					self.attack.dist = dist
-				end
-				
-				local vec = {x=p.x-s.x, y=p.y-s.y, z=p.z-s.z}
-				local yaw = math.atan(vec.z/vec.x)+math.pi/2
-				if self.drawtype == "side" then
-					yaw = yaw+(math.pi/2)
-				end
-				if p.x > s.x then
-					yaw = yaw+math.pi
-				end
-				self.object:setyaw(yaw)
-				self.set_velocity(self, 0)
-				
-				if self.timer > self.shoot_interval and math.random(1, 100) <= 60 then
-					self.timer = 0
-					
-					self:set_animation("punch")
-					
-					if self.sounds and self.sounds.attack then
-						minetest.sound_play(self.sounds.attack, {object = self.object})
-					end
-					
-					local p = self.object:getpos()
-					p.y = p.y + (self.collisionbox[2]+self.collisionbox[5])/2
-					local obj = minetest.env:add_entity(p, self.arrow)
-					local amount = (vec.x^2+vec.y^2+vec.z^2)^0.5
-					local v = obj:get_luaentity().velocity
-					vec.y = vec.y+1
-					vec.x = vec.x*v/amount
-					vec.y = vec.y*v/amount
-					vec.z = vec.z*v/amount
-					obj:setvelocity(vec)
 				end
 			end
 		end,
