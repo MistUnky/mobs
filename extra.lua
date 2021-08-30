@@ -68,7 +68,7 @@ function mobs_extra_register_sheeplike(name, hp, textures, textures_shear, shear
 			end
 		end,
 	})
-	mobs:register_spawn(name, biomes, 20, 8, 7000, 2, 31000)
+	mobs:register_spawn(name, biomes, 20, 8, 7000, 3, 31000)
 end
 
 --mobs_extra_register_sheeplike("mobs:sheep", 5, {"mobs_sheep.png", "mobs_sheep.png"}, {"mobs_sheep_naked.png", "mobs_sheep_naked.png"}, "wool:white", "farming:wheat", {"default:dirt_with_grass"})
@@ -98,6 +98,19 @@ minetest.register_craftitem("mobs:milk", {
 	description = "Milk",
 	inventory_image = "mobs_milk.png",
 	on_use = minetest.item_eat(4),
+})
+
+minetest.register_craftitem("mobs:cheese", {
+	description = "Cheese",
+	inventory_image = "mobs_cheese.png",
+	on_use = minetest.item_eat(13),
+})
+
+minetest.register_craft({
+	type = "cooking",
+	output = "mobs:cheese",
+	recipe = "mobs:milk",
+	cooktime = 17,
 })
 
 mobs_extra_register_sheeplike("mobs:cow", 5, {"mobs_cow.png", "mobs_cow.png"}, {"mobs_cow.png", "mobs_cow.png"}, "mobs:milk", "farming:wheat", {"default:dirt_with_grass"}, 3, 4, -1.0)
