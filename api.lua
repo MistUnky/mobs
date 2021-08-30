@@ -147,19 +147,23 @@ function mobs:register_mob(name, def)
 				self.object:setacceleration({x=0, y=-10, z=0})
 			end
 			
-			if self.disable_fall_damage and self.object:getvelocity().y == 0 then
-				if not self.old_y then
-					self.old_y = self.object:getpos().y
-				else
-					local d = self.old_y - self.object:getpos().y
-					if d > 5 then
-						local damage = d-5
-						self.object:set_hp(self.object:get_hp()-damage)
-						if self.object:get_hp() == 0 then
-							self.object:remove()
+			if self.object:getpos() ~= nil then
+				if self.disable_fall_damage and self.object:getvelocity().y == 0 then
+					if not self.old_y then
+						self.old_y = self.object:getpos().y
+					else
+						local d = self.old_y - self.object:getpos().y
+						if d > 5 then
+							local damage = d-5
+							self.object:set_hp(self.object:get_hp()-damage)
+							if self.object:get_hp() == 0 then
+								self.object:remove()
+							end
+						end
+						if self.object:getpos() ~= nil then
+							self.old_y = self.object:getpos().y
 						end
 					end
-					self.old_y = self.object:getpos().y
 				end
 			end
 			
