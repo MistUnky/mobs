@@ -1,3 +1,5 @@
+mob_spawn_chance_multiplier = 1.0
+
 dofile(minetest.get_modpath("mobs").."/api.lua")
 
 mobs:register_mob("mobs:dirt_monster", {

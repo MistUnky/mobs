@@ -492,7 +492,7 @@ function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_o
 		nodenames = nodes,
 		neighbors = {"air"},
 		interval = 30,
-		chance = chance,
+		chance = chance * mob_spawn_chance_multiplier,
 		action = function(pos, node, _, active_object_count_wider)
 			if active_object_count_wider > active_object_count then
 				return
