@@ -26,7 +26,7 @@ function mobs:register_mob(name, def)
 		arrow = def.arrow,
 		shoot_interval = def.shoot_interval,
 		sounds = def.sounds,
-		animation = def.animation,
+		animation = nil,--def.animation,
 		follow = def.follow,
 		jump = def.jump or true,
 		
